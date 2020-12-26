@@ -84,6 +84,17 @@ Then the `ArgumentCompiler` saves you:
     expect{ curry(:adder, 1, ct_args(0 => 1)).() }.to raise_error(Lab42::Curry::DuplicatePositionSpecification)
 ```
 
+### Context With proc like objects
+
+Given a lambda
+```ruby
+    let(:sub) { ->{ _1 - _2} }
+    let(:inverse) { curry(sub, rt_arg(1), rt_arg) }
+```
+Then we will get the negative value
+```ruby
+    expect( inverse.(2, 1) ).to eq(-1)
+```
 # LICENSE
 
 Copyright 2020,1 Robert Dober robert.dober@gmail.com
