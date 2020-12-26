@@ -8,7 +8,6 @@ if ENV.fetch('COVERAGE', false)
     add_filter %r{/spec/}
   end
 end
-require 'coveralls'
 
 
 $: << File.expand_path("../lib")
