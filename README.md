@@ -93,7 +93,7 @@ Given a lambda
 ```
 Then we will get the negative value
 ```ruby
-    expect( inverse.(2, 1) ).to eq(-1)
+    expect( inverse.(2, 1) ).to eq(-1) 
 ```
 # LICENSE
 
