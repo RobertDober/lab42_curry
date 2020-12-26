@@ -1,5 +1,5 @@
 [![Gem Version](https://badge.fury.io/rb/lab42_curry.svg)](http://badge.fury.io/rb/lab42_curry)
-
+![CI](https://github.com/robertdober/lab42_curry/workflows/CI/badge.svg)
 
 # Lab42::Curry
 
