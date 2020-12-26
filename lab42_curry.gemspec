@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.homepage    = "https://github.com/robertdober/lab42_curry"
   s.licenses    = %w{Apache-2.0}
 
-  s.required_ruby_version = '>= 3.0.0'
+  s.required_ruby_version = '>= 2.7.0'
   # s.add_dependency 'lab42_result', '~> 0.1'
 
   s.add_development_dependency 'pry', '~> 0.13.1'
