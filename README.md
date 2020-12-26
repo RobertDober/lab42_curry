@@ -1,5 +1,6 @@
 [![Gem Version](https://badge.fury.io/rb/lab42_curry.svg)](http://badge.fury.io/rb/lab42_curry)
 ![CI](https://github.com/robertdober/lab42_curry/workflows/CI/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/RobertDober/lab42_curry/badge.svg?branch=master)](https://coveralls.io/github/RobertDober/lab42_curry?branch=master)
 
 # Lab42::Curry
 
