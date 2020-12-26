@@ -9,13 +9,25 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-    name: RSpec
+    strategy:
+      matrix:
+        ruby: [2.7.2, 3.0.0-rc1]
+
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-ruby@v1
+
+      - name: Setup ruby
+        uses: ruby/setup-ruby@v1
         with:
-          ruby-version: '2.7' # Version range or exact version of a Ruby version to use, using semvers version range syntax.
-      - run: |
-          gem install bundler
-          bundle install
-          bundle exec rspec
+          ruby-version: ${{ matrix.ruby }}
+
+      - name: Install bundler
+        run: gem install bundler
+
+      - name: Install gems
+        run: |
+          bundle config set --local without benchmark
+          bundle install --jobs=3
+
+      - name: Tests
+        run: bundle exec rspec
