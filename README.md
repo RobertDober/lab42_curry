@@ -1,5 +1,5 @@
-[![Gem Version](http://img.shields.io/gem/v/lab42_curry.svg)](http://img.shields.io/gem/v/lab42_curry.svg)
-![CI](https://github.com/robertdober/lab42_curry/workflows/CI/badge.svg)
+[![Gem Version](http://img.shields.io/gem/v/lab42_curry.svg)](https://rubygems.org/gems/lab42_curry)
+[![CI](https://github.com/robertdober/lab42_curry/workflows/CI/badge.svg)](https://github.com/robertdober/lab42_curry/actions)
 [![Coverage Status](https://coveralls.io/repos/github/RobertDober/lab42_curry/badge.svg?branch=master)](https://coveralls.io/github/RobertDober/lab42_curry?branch=master)
 
 # Lab42::Curry
