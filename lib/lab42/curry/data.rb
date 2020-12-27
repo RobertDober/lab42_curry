@@ -17,16 +17,13 @@ module Lab42
         else
           method_or_name
         end
+
+        @arg_compiler = ArgCompiler.new(ct_args)
         _curry(&blk)
       end
 
-      def _compile_final_args(rt_args)
-        arg_compiler = ArgCompiler.new(ct_args: ct_args, rt_args: rt_args)
-        arg_compiler.compile_args
-      end
-
       def _curry(&blk)
-        @curried = ->(*rt_args) { @mthd.(*_compile_final_args(rt_args)) }
+        @curried = ->(*rt_args) { @mthd.(*@arg_compiler.compile_args(rt_args)) }
       end
     end
   end

@@ -82,7 +82,7 @@ Then we get
 When you indicate values for the same position multiple times 
 Then the `ArgumentCompiler` saves you:
 ```ruby
-    expect{ curry(:adder, 1, ct_args(0 => 1)).() }.to raise_error(Lab42::Curry::DuplicatePositionSpecification)
+    expect{ curry(:adder, 1, ct_args(0 => 1)) }.to raise_error(Lab42::Curry::DuplicatePositionSpecification)
 ```
 
 ### Context With proc like objects
