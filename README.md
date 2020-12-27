@@ -20,9 +20,10 @@ The simplest and classical way to curry a function (I include _methods_ when I s
 Given such a simple funcion
 ```ruby
     def adder(a, b, c); a + 10*b + 100*c end
-    let(:add_to_1) {curry(:adder, 1)}          # Equivalent to Elixir's &adder(1, &1, &2)
+    let(:add_to_1) {curry(:adder, 1)}
+    # Equivalent to Elixir's &adder(1, &1, &2)
 ```
-**N.B.** that `Lab42::Curry` has been included into Examples **and** ExampleGroups in `spec/spec_helper.rb` 
+**N.B.** that `Lab42::Curry` has been included into Examples **and** ExampleGroups in `spec/spec_helper.rb`
 
 Then very unsurprisingly:
 ```ruby
@@ -32,7 +33,7 @@ Then very unsurprisingly:
 We call the arguments passed into `curry` the _compiletime arguments_, and the arguments passed into the
 invocation of the _curried function_, which has been returned by the invocation of `curry`, the _runtime arguments_.
 
-In our case the _compiletime arguments_ were `[1]`  and the _runtime arguments_ were `[2, 3]` 
+In our case the _compiletime arguments_ were `[1]`  and the _runtime arguments_ were `[2, 3]`
 
 ### Reordering
 
@@ -40,7 +41,8 @@ There are several methods of reordering arguments, the simplest is probably usin
 
 When a placeholder is provided (`Lab42::Curry.runtime_arg` aliased as `rt_arg` )
 ```ruby
-    let(:add_to_30) { curry(:adder, rt_arg, 3) }   # Equivalent to Elixir's &adder(&1, 3, &2)
+    let(:add_to_30) { curry(:adder, rt_arg, 3) }
+    # Equivalent to Elixir's &adder(&1, 3, &2)
 ```
 Then we see that
 ```ruby
@@ -48,12 +50,13 @@ Then we see that
 ```
 #### Total control over argument order...
 
-... can be achieved by passing the index of the positional argument to be used into `Lab42::Curry.runtime_arg` 
+... can be achieved by passing the index of the positional argument to be used into `Lab42::Curry.runtime_arg`
 
 Given the total reorder form
 ```ruby
-    let(:twohundred_three) { curry(:adder, runtime_arg(2), runtime_arg(0), 1) } 
-    # now first argument is c (index 2) and second a (index 0) and b = 1, like Elixir's &adder(&2, 1, &1)
+    let(:twohundred_three) { curry(:adder, runtime_arg(2), runtime_arg(0), 1) }
+    # now first argument is c (index 2) and second a (index 0) and b = 1
+    # Like Elixir's &adder(&2, 1, &1)
 ```
 Then we have
 ```ruby
@@ -62,13 +65,14 @@ Then we have
 
 #### Picking a position for a compiletime argument
 
-It might be cumbersome to write things like: `curry(..., rt_arg, rt_arg, ..., rt_arg, 42)` 
+It might be cumbersome to write things like: `curry(..., rt_arg, rt_arg, ..., rt_arg, 42)`
 
-Therefore we can express the same much more concisely with `Lab42::Curry.compiletime_args`, and its alias `ct_args` 
+Therefore we can express the same much more concisely with `Lab42::Curry.compiletime_args`, and its alias `ct_args`
 
 Given
 ```ruby
-    let(:twohundred) { curry(:adder, ct_args(2 => 2)) } # same as curry(:adder, rt_arg, rt_arg, 2)
+    let(:twohundred) { curry(:adder, ct_args(2 => 2)) }
+    # same as curry(:adder, rt_arg, rt_arg, 2)
 ```
 Then we get
 ```ruby
@@ -80,7 +84,7 @@ Then we get
 
 #### Error Handling
 
-When you indicate values for the same position multiple times 
+When you indicate values for the same position multiple times
 Then the `ArgumentCompiler` saves you:
 ```ruby
     expect{ curry(:adder, 1, ct_args(0 => 1)) }.to raise_error(Lab42::Curry::DuplicatePositionSpecification)
@@ -95,8 +99,43 @@ Given a lambda
 ```
 Then we will get the negative value
 ```ruby
-    expect( inverse.(2, 1) ).to eq(-1) 
+    expect( inverse.(2, 1) ).to eq(-1)
 ```
+
+### Context Keyword Arguments
+
+Given a function which takes keyword arguments like the following
+```ruby
+    def rectangle(length, width, border: 0, color: )
+      [length, width, border, color]
+    end
+    let(:red_rectangle) { curry(:rectangle, color: :red) }
+    let(:wide_bordered) { curry(:rectangle, rt_arg, 999, border: 1) }
+```
+
+Then the red rectangle gives us
+```ruby
+    expect( red_rectangle.(1, 2) ).to eq([1, 2, 0, :red])
+    expect( red_rectangle.(1, 2, border: 1) ).to eq([1, 2, 1, :red])
+```
+
+Can we override curried values, normally not
+Example: cannot override
+```ruby
+    expect{ red_rectangle.(1, 2, color: :blue) }
+      .to raise_error(
+        Lab42::Curry::DuplicateKeywordArgument,
+        "keyword argument :color is already defined with value :red cannot override with :blue")
+```
+
+But we can create a more lenient curry with `curry!`
+```ruby
+  expect( curry!(:rectangle, 1, 2, color: :red ).(color: :blue) )
+    .to eq([1, 2, 0, :blue])
+```
+
+
+
 # LICENSE
 
 Copyright 2020,1 Robert Dober robert.dober@gmail.com
