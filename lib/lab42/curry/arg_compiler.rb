@@ -7,16 +7,20 @@ module Lab42
     class ArgCompiler
 
       def compile_args rt_args
-        @rt_args = rt_args
-        @rt_arg_positions.each(&method(:_set_rt_arg))
-        @rt_args.each(&method(:_set_final!))
-        @final.map.sort_by(&:first).map(&:last)
+        @__compiled_args__ ||= _compile_args(rt_args)
       end
 
       private
       def initialize(ct_args)
         _init
         _determine_predefined_positions! ct_args
+      end
+
+      def _compile_args rt_args
+        @rt_args = rt_args
+        @rt_arg_positions.each(&method(:_set_rt_arg))
+        @rt_args.each(&method(:_set_final!))
+        @final.map.sort_by(&:first).map(&:last)
       end
 
       def _determine_predefined_positions! ct_args

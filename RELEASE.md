@@ -1,5 +1,7 @@
 # v0.1.1 ????
 
+- [2-currying-keyword-args](https://github.com/robertdober/lab42_curry/issues/2)
+
 - [3-reword-README-speculations](https://github.com/robertdober/lab42_curry/issues/3)
 
 - [1-early-exception-raising-on-positional-conflicts](https://github.com/robertdober/lab42_curry/issues/1)
