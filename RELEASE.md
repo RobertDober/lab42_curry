@@ -1,4 +1,4 @@
-# v0.1.1 ????
+# v0.1.1 2020-12-27
 
 - [2-currying-keyword-args](https://github.com/robertdober/lab42_curry/issues/2)
 
