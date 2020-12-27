@@ -20,7 +20,7 @@ The simplest and classical way to curry a function (I include _methods_ when I s
 Given such a simple funcion
 ```ruby
     def adder(a, b, c); a + 10*b + 100*c end
-    let(:add_to_1) {curry(:adder, 1)}
+    let(:add_to_1) {curry(:adder, 1)}          # Equivalent to Elixir's &adder(1, &1, &2)
 ```
 **N.B.** that `Lab42::Curry` has been included into Examples **and** ExampleGroups in `spec/spec_helper.rb` 
 
@@ -40,7 +40,7 @@ There are several methods of reordering arguments, the simplest is probably usin
 
 When a placeholder is provided (`Lab42::Curry.runtime_arg` aliased as `rt_arg` )
 ```ruby
-    let(:add_to_30) { curry(:adder, rt_arg, 3)  } 
+    let(:add_to_30) { curry(:adder, rt_arg, 3) }   # Equivalent to Elixir's &adder(&1, 3, &2)
 ```
 Then we see that
 ```ruby
@@ -52,14 +52,15 @@ Then we see that
 
 Given the total reorder form
 ```ruby
-    let(:mul_decrement) { curry(:adder, runtime_arg(2), runtime_arg(0), 1) } # now first argument is c (index 2) and second a (index 0) and b = 1
+    let(:twohundred_three) { curry(:adder, runtime_arg(2), runtime_arg(0), 1) } 
+    # now first argument is c (index 2) and second a (index 0) and b = 1, like Elixir's &adder(&2, 1, &1)
 ```
 Then we have
 ```ruby
-    expect( mul_decrement.(2, 3) ).to eq(213)
+    expect( twohundred_three.(2, 3) ).to eq(213)
 ```
 
-#### Picking a positon for a compiletime argument
+#### Picking a position for a compiletime argument
 
 It might be cumbersome to write things like: `curry(..., rt_arg, rt_arg, ..., rt_arg, 42)` 
 
@@ -67,11 +68,11 @@ Therefore we can express the same much more concisely with `Lab42::Curry.compile
 
 Given
 ```ruby
-    let(:doubler) { curry(:adder, ct_args(2 => 2)) } # same as curry(:adder, rt_arg, rt_arg, 2)
+    let(:twohundred) { curry(:adder, ct_args(2 => 2)) } # same as curry(:adder, rt_arg, rt_arg, 2)
 ```
 Then we get
 ```ruby
-    expect( doubler.(4, 3) ).to eq(234)
+    expect( twohundred.(4, 3) ).to eq(234)
 ```
 
 **N.B.** that we could have defined `add_to_30` as `curry(:adder, rt_arg, 3, rt_arg)` of course
