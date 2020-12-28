@@ -134,6 +134,55 @@ But we can create a more lenient curry with `curry!`
     .to eq([1, 2, 0, :blue])
 ```
 
+### Context Currying Blocks
+
+Often times it is the block which might be the fixed point in a series of computations, for
+that reason we will curry a block
+
+Given a function that takes a block
+```ruby
+    let(:sub_with) { ->(a, b, &blk) { blk.(a - b) } }
+    let(:double_diff) { curry( sub_with ) { _1 * 2 } }
+```
+Then it does just that
+```ruby
+     expect( double_diff.(22, 1)  ).to eq(42)
+```
+And of course we can also curry a positional argument
+```ruby
+    triple_dec = curry( sub_with, rt_arg, 1 ) { _1 * 3 } 
+    expect( triple_dec.(15) ).to eq(42)
+```
+
+#### Currying on Unbound Methods
+
+
+Can be a very useful exercise, we will see that `curry` creates a curred function that will bind when called
+
+Given the classical map example:
+```ruby
+   let(:incrementer) { curry(Enumerable.instance_method(:map)) { _1 + 1} }
+```
+
+Then we can use it by  binding it to an `Enumerable` object
+```ruby
+    expect( incrementer.([1, 2]) ).to eq([2, 3])
+```
+
+But we must not provide a block **again**
+```ruby
+    expect{ incrementer.([]) {_1 + 2} }
+      .to raise_error(
+        Lab42::Curry::DuplicateBlock,
+        "block has already been curried")
+```
+
+This again can be authorized by using the more lenient `curry!` version
+And therefor
+```ruby
+    maybe_incrementer = curry!(Enumerable.instance_method(:map)) {_1 + 1}
+    expect( maybe_incrementer.([1, 2], &:itself) ).to eq([1, 2])
+```
 
 
 # LICENSE

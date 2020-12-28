@@ -10,8 +10,7 @@ module Lab42
     end
 
     def curry!(method_or_name, *curry_time_args, **curry_time_kwds, &blk)
-      curry_data = Data.new(self, method_or_name, *curry_time_args, **curry_time_kwds, &blk)
-      curry_data.allow_kwd_override = true
+      curry_data = Data.new!(self, method_or_name, *curry_time_args, **curry_time_kwds, &blk)
       curry_data.curried
     end
 
