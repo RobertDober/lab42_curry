@@ -71,7 +71,7 @@ Therefore we can express the same much more concisely with `Lab42::Curry.compile
 
 Given
 ```ruby
-    let(:twohundred) { curry(:adder, ct_args(2 => 2)) }
+    let(:twohundred) { curry(:adder, ct_args(3 => 2)) }
     # same as curry(:adder, rt_arg, rt_arg, 2)
 ```
 Then we get

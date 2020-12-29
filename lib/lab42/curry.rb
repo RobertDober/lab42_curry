@@ -1,17 +1,16 @@
-require_relative "curry/data"
-require_relative "curry/runtime_arg"
 require_relative "curry/compiletime_args"
+require_relative "curry/computed_arg"
+require_relative "curry/currier"
+require_relative "curry/runtime_arg"
 
 module Lab42
   module Curry
     def curry(method_or_name, *curry_time_args, **curry_time_kwds, &blk)
-      curry_data = Data.new(self, method_or_name, *curry_time_args, **curry_time_kwds, &blk)
-      curry_data.curried
+      Currier.new(method_or_name, curry_time_args, curry_time_kwds, context: self, &blk)
     end
 
     def curry!(method_or_name, *curry_time_args, **curry_time_kwds, &blk)
-      curry_data = Data.new!(self, method_or_name, *curry_time_args, **curry_time_kwds, &blk)
-      curry_data.curried
+      Currier.new(method_or_name, curry_time_args, curry_time_kwds, context: self, allow_override: true, &blk)
     end
 
     def compiletime_args(positions)
@@ -19,8 +18,13 @@ module Lab42
     end
     alias_method :ct_args, :compiletime_args
 
-    def runtime_arg(*args)
-      RuntimeArg.new(*args)
+    def compute_arg(&blk)
+      ComputedArg.new(blk)
+    end
+    alias_method :comp, :compute_arg
+
+    def runtime_arg # position=nil
+      RuntimeArg.new # position&.pred
     end
     alias_method :rt_arg, :runtime_arg
   end

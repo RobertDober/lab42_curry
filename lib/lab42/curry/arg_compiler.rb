@@ -1,76 +1,86 @@
-require_relative 'runtime_arg'
+require_relative 'arg_compiler/positionals'
+require_relative 'arg_compiler/phase2'
 require_relative 'compiletime_args'
+require_relative 'computed_arg'
+require_relative 'runtime_arg'
+
 require_relative 'errors'
 
 module Lab42
   module Curry
     class ArgCompiler
 
-      def compile_args rt_args
-        @__compiled_args__ ||= _compile_args(rt_args)
+      attr_reader :ct_blk
+
+      def allows_override?; @allows_override end
+
+      def compile(rt_args, rt_kwds, rt_blk)
+        Phase2.new(self, rt_args, rt_kwds, rt_blk).compile
+      end
+
+      #
+      #  All four state variables are 0 based
+      #
+      def computations
+        @__computations__ ||= {}
+      end
+
+      def positionals
+        @__positionals__ ||= Positionals.new 
+      end
+
+      def final_kwds
+        @__final_kwds__ ||= {}
       end
 
       private
-      def initialize(ct_args)
-        _init
-        _determine_predefined_positions! ct_args
+      def initialize(ct_args, ct_kwds, allow_override:, &blk)
+        @allow_override = allow_override
+        @ct_args = ct_args
+        @ct_blk  = ct_blk
+        @ct_kwds = ct_kwds
+
+        _precompile!
       end
 
-      def _compile_args rt_args
-        @rt_args = rt_args
-        @rt_arg_positions.each(&method(:_set_rt_arg))
-        @rt_args.each(&method(:_set_final!))
-        @final.map.sort_by(&:first).map(&:last)
-      end
-
-      def _determine_predefined_positions! ct_args
-        ct_args.each(&method(:_set_ct_arg))
-      end
-
-      def _init
-        @rt_arg_positions = []
-        # invariant @pos is lowest free index in @final
-        # update both together with _set_final!( value, idx = @pos )
-        @pos = 0
-        @final = {}
-      end
-
-      def _set_ct_arg ct_arg
+      def _ct_arg ct_arg
         case ct_arg
         when RuntimeArg
-          _set_target_position! ct_arg.position
+          positionals.set_runtime_arg ct_arg
         when CompiletimeArgs
           _set_positions! ct_arg
+        when ComputedArg
+          positionals.set_computation ct_arg
         else
           _set_final! ct_arg
         end
       end
 
-      def _set_final! value, pos=nil
-        pos ||= @pos
-        raise DuplicatePositionSpecification, "There is already a curried value for #{pos}" if @final.has_key?(pos)
-        @final[pos] = value
-        while @final.has_key?(@pos)
-          @pos += 1
+      def _ct_kwd((key, val))
+        case val
+        when ComputedArg
+          cmputations[key] = val.with_position(key)
+          final_kwds[key]  = RuntimeArg
+        else
+          final_kwds[key]  = val
         end
       end
 
+      def _precompile!
+        @ct_args.each(&method(:_ct_arg))
+        @ct_kwds.each(&method(:_ct_kwd))
+      end
+
+      def _set_final! value, pos=nil
+        positionals.set_value! value, pos
+      end
+
       def _set_position!((position, value))
-        _set_final! value, position
+        positionals.set_value! value, position.pred
       end
 
       def _set_positions! ct_arg
         ct_arg.each(&method(:_set_position!))
-      end
-
-      def _set_rt_arg rt_arg_position
-        raise MissingRuntimeArg, "for position #{rt_arg_position}" if @rt_args.empty?
-        @final[rt_arg_position] = @rt_args.shift
-      end
-
-      def _set_target_position! position
-        @rt_arg_positions << (position || @pos)
-        _set_final! RuntimeArg, position
       end
 
     end
