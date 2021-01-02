@@ -1,8 +1,10 @@
-# v0.2.0 2020-12-??
+# v0.2.0 2021-01-02
 
-- Refactoring
+- Refactoring (still some needed)
 
-- [6-bind-args](https://github.com/robertdober/lab42_curry/issues/6)
+- Computed Arguments in implied, indicated or keyword position
+
+~~- [6-bind-args](https://github.com/robertdober/lab42_curry/issues/6) replaced with Computed Arguments~~
 
 # v0.1.1 2020-12-27
 

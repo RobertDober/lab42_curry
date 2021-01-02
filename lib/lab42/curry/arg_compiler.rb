@@ -12,19 +12,15 @@ module Lab42
 
       attr_reader :ct_blk
 
-      def allows_override?; @allows_override end
+      def allows_override?; @allow_override end
 
       def compile(rt_args, rt_kwds, rt_blk)
         Phase2.new(self, rt_args, rt_kwds, rt_blk).compile
       end
 
       #
-      #  All four state variables are 0 based
+      #  0 based
       #
-      def computations
-        @__computations__ ||= {}
-      end
-
       def positionals
         @__positionals__ ||= Positionals.new 
       end
@@ -37,7 +33,7 @@ module Lab42
       def initialize(ct_args, ct_kwds, allow_override:, &blk)
         @allow_override = allow_override
         @ct_args = ct_args
-        @ct_blk  = ct_blk
+        @ct_blk  = blk
         @ct_kwds = ct_kwds
 
         _precompile!
@@ -57,13 +53,7 @@ module Lab42
       end
 
       def _ct_kwd((key, val))
-        case val
-        when ComputedArg
-          cmputations[key] = val.with_position(key)
-          final_kwds[key]  = RuntimeArg
-        else
-          final_kwds[key]  = val
-        end
+        final_kwds[key]  = val
       end
 
       def _precompile!
@@ -76,7 +66,7 @@ module Lab42
       end
 
       def _set_position!((position, value))
-        positionals.set_value! value, position.pred
+        positionals.set_value! value, position
       end
 
       def _set_positions! ct_arg

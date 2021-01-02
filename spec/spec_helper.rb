@@ -9,7 +9,7 @@ require 'simplecov'
   end
 # end
 
-
+require "speculate_about"
 $: << File.expand_path("../lib")
 require "lab42/curry"
 PROJECT_ROOT = File.expand_path "../..", __FILE__

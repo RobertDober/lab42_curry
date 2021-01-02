@@ -18,13 +18,13 @@ module Lab42
     end
     alias_method :ct_args, :compiletime_args
 
-    def compute_arg(&blk)
-      ComputedArg.new(blk)
+    def compute_arg(position = nil, &blk)
+      ComputedArg.new(position, blk)
     end
     alias_method :comp, :compute_arg
 
-    def runtime_arg # position=nil
-      RuntimeArg.new # position&.pred
+    def runtime_arg position=nil
+      RuntimeArg.new position
     end
     alias_method :rt_arg, :runtime_arg
   end

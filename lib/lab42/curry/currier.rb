@@ -35,7 +35,7 @@ module Lab42
       end
 
       private
-      def initialize(method_or_name, ct_args, ct_kwds, context:, allow_override: false, &ct_block)
+      def initialize(method_or_name, ct_args, ct_kwds, context:, allow_override: false, &ct_blk)
         @allow_override = allow_override
         @context = context
         @ct_args = ct_args

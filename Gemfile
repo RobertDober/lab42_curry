@@ -9,7 +9,7 @@ gemspec
 group :test do
   gem "coveralls", require: false
   gem "simplecov", "~> 0.19.0"
-  gem "speculate_about", "~> 0.4.1" #, path: "../../ruby/speculate_about"
+  gem "speculate_about", "~> 0.5.2" #,  path: "../../ruby/speculate_about"
 end
 
 # gem "rails"

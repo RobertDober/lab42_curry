@@ -23,18 +23,25 @@ module Lab42
         end
 
         def export_args
-          @args.values_at(*0..@args.keys.max)
+          (0...(@args.keys.max&.succ||0))
+            .inject [] do |result, idx|
+              if @args.has_key?(idx)
+                result << @args[idx]
+              else
+                result << RuntimeArg
+              end
+              result
+            end
         end
 
         def set_computation comp_arg
-          @args[ct_pos]         = comp_org.class
-          @computations[rt_pos] = comp_arg
-          @translations[rt_pos] = ct_pos # comp_arg.position || rt_pos if comp(position){...} is implemented
+          @args[comp_arg.position || ct_pos]         = comp_arg.class
+          @computations[comp_arg.position || rt_pos] = comp_arg
         end
 
         # An rt_arg placeholder
         def set_runtime_arg rt_arg 
-          @args[ct_pos.pred] = rt_arg.class
+          @args[ct_pos] = rt_arg.class
           @translations[rt_arg.position || rt_pos] = ct_pos
           _update_positions
         end

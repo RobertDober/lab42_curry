@@ -54,8 +54,8 @@ Then we see that
 
 Given the total reorder form
 ```ruby
-    let(:twohundred_three) { curry(:adder, runtime_arg(2), runtime_arg(0), 1) }
-    # now first argument is c (index 2) and second a (index 0) and b = 1
+    let(:twohundred_three) { curry(:adder, runtime_arg(1), 1, runtime_arg(0)) }
+    # now first argument is c (index 1) and second a (index 0) and b = 1
     # Like Elixir's &adder(&2, 1, &1)
 ```
 Then we have
@@ -71,7 +71,7 @@ Therefore we can express the same much more concisely with `Lab42::Curry.compile
 
 Given
 ```ruby
-    let(:twohundred) { curry(:adder, ct_args(3 => 2)) }
+    let(:twohundred) { curry(:adder, ct_args(2 => 2)) }
     # same as curry(:adder, rt_arg, rt_arg, 2)
 ```
 Then we get
@@ -154,8 +154,7 @@ And of course we can also curry a positional argument
     expect( triple_dec.(15) ).to eq(42)
 ```
 
-#### Currying on Unbound Methods
-
+#### Context Currying on Unbound Methods
 
 Can be a very useful exercise, we will see that `curry` creates a curred function that will bind when called
 
@@ -184,7 +183,57 @@ And therefor
     expect( maybe_incrementer.([1, 2], &:itself) ).to eq([1, 2])
 ```
 
+But of course we can also bind to unbound methods w/o a block
 
+Given
+```ruby
+    let(:length) { curry(String.instance_method(:size)) }
+```
+Then we can call it in a functional way
+```ruby
+    expect( length.("") ).to be_zero
+```
+
+### Context Computed Arguments
+
+Let us say we want to define a specialisation of a function
+Given
+```ruby
+    def add a, b, c
+      a + b + c
+    end
+    let(:adddiff) { curry(:add, comp{ _2 - _3}) }
+```
+Then the first parameter will be the diff of the second and third argument
+```ruby
+    expect( adddiff.(21, 1) ).to eq(42)
+```
+
+When we specify a position for `comp` the computed argument gets this place
+```ruby
+    def args *a
+      a
+    end
+    let(:sum_middle) { curry(:args, comp(1){ _1 + _3 } ) }
+```
+Then we get
+```ruby
+    expect( sum_middle.(1, 2) ).to eq([1, 3, 2])
+```
+
+#### Context Computed Keywords
+
+Given
+```ruby
+    def kwds *, **k
+      k
+    end
+    let(:sum) { curry(:kwds, a: comp{ _1 + _2}) }
+```
+Then we can expect that sum corresponds
+```ruby
+    expect( sum.(1, 2) ).to eq({a: 3})
+```
 # LICENSE
 
 Copyright 2020,1 Robert Dober robert.dober@gmail.com

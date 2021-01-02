@@ -1,6 +1,4 @@
 require "speculate_about"
 RSpec.describe "Speculations" do
-  context "main speculation" do
-    speculate_about "README.md", alternate_syntax: true
-  end
+  speculate_about "README.md"
 end

@@ -1,15 +1,17 @@
 module Lab42
   module Curry
     class ComputedArg
-      
-      def with_position(final_position)
-        @final_position = final_position
-        self
-      end
 
+      attr_reader :position
+
+      def call(*args, **kwds)
+        @blk.call(*args, **kwds)
+      end
+      
       private
-      def initialize(blk)
+      def initialize(position, blk)
         @blk = blk
+        @position = position
       end
     end
   end
